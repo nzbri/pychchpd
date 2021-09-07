@@ -34,7 +34,6 @@ setuptools.setup(
                       'tabulate',
                       'google-api-python-client'],
 
-    package_dir={"": "pychchpd"},
     packages=setuptools.find_packages(),
     python_requires=">=3.6",
 )
