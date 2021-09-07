@@ -35,6 +35,6 @@ setuptools.setup(
                       'google-api-python-client'],
 
     package_dir={"": "pychchpd"},
-    packages=setuptools.find_packages(where="pychchpd"),
+    packages=setuptools.find_packages(),
     python_requires=">=3.6",
 )
