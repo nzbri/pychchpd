@@ -18,6 +18,9 @@ setuptools.setup(
     },
     classifiers=[
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
@@ -31,7 +34,7 @@ setuptools.setup(
                       'tabulate',
                       'google-api-python-client'],
 
-    package_dir={"": "pychchpd"},
-    packages=setuptools.find_packages(where="pychchpd"),
+    package_dir={"": "src"},
+    packages=setuptools.find_packages(where="src"),
     python_requires=">=3.6",
 )
