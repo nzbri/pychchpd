@@ -154,16 +154,27 @@ class chchpd:
         self._session_id_allow_hyphen = bool(allow_hyphen)
         self._session_id_allow_underscore = bool(allow_underscore)
 
-    def _fix_subject_id(self, dataset):
-        if not self._anonymize_id:
-            return dataset.fillna(np.nan)
-
+    def _get_subject_id_anon_id_conversion_dict(self):
         participant_conversion_table = (
             self._load_spreadsheet('participants', na=['NA', '', 'None', None], fix_anon=False).
                 filter(items=['subject_id', 'anon_id']))
 
         participant_conversion_dict = dict(zip(participant_conversion_table.subject_id,
                                                participant_conversion_table.anon_id))
+        return participant_conversion_dict
+
+    def get_anon_id_from_subject_id(self, subject_id):
+        participant_conversion_dict = self._get_subject_id_anon_id_conversion_dict()
+        return participant_conversion_dict.get(subject_id)
+
+    def get_subject_id_from_anon_id(self, anon_id):
+        participant_conversion_dict = self._get_subject_id_anon_id_conversion_dict()
+        anon_conversion_dict = {anon: subid for subid, anon in participant_conversion_dict.items()}
+        return anon_conversion_dict.get(anon_id)
+
+    def _fix_subject_id(self, dataset):
+        if not self._anonymize_id:
+            return dataset.fillna(np.nan)
 
         def _identify_col(orig_col):
             cols_of_interest = ['_id', '_label']
@@ -173,6 +184,8 @@ class chchpd:
             return False
 
         cols = [col for col in dataset.columns if _identify_col(col)]
+        participant_conversion_dict = self._get_subject_id_anon_id_conversion_dict()
+
         for col in cols:
             # These columns should be string. !!!
             dataset[col] = dataset[col].astype(str)
