@@ -1,0 +1,8 @@
+gspread
+gspread-dataframe
+pandas>1
+pyjanitor
+numpy
+python-dateutil
+tabulate
+google-api-python-client
