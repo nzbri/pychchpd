@@ -5,12 +5,15 @@ import numpy as np
 from . import defaults
 from .utils import return_copy
 from pathlib import Path
-from functools import lru_cache, cache
+from functools import lru_cache
 from dateutil.parser import parse
 from datetime import datetime
 from gspread_dataframe import get_as_dataframe
 import janitor
 from tabulate import tabulate
+import time
+
+cache = lru_cache(maxsize=None)
 
 
 def move_columns(df, cols_to_move: list, ref_col: str, place='After'):
@@ -317,6 +320,7 @@ class chchpd:
             elapsed_time_since_update = (datetime.now(tz=modified_time.tzinfo) - modified_time).total_seconds()
             if (elapsed_time_since_update < defaults.time_after_update_wait):
                 print(f'Attempt #{attempt}/{defaults.retry_attempts}: {modality} spreadsheet is updating.')
+                time.sleep(defaults.wait_for_update)
             else:
                 accept_spreadsheet = True
 
