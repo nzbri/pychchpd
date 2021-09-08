@@ -10,7 +10,8 @@ spreadsheets = {'session_code_map': {'spreadsheet': 'SubjectSessionMapping', 'sh
                 'hads': {'spreadsheet': 'NEW PD Progression clinical data ', 'sheet': 'HADS'},
                 'meds': {'spreadsheet': 'NEW PD Progression clinical data ', 'sheet': 'Medication'},
                 'neuropsyc': {'spreadsheet': 'RedcapExport', 'sheet': 'RedcapExport'},
-                'mri': {'spreadsheet': 'PD Scan numbers', 'sheet': 'RedcapExport'},}
+                'mri': {'spreadsheet': 'PD Scan numbers', 'sheet': 'RedcapExport'},
+                'assessments': {'spreadsheet': 'AssessmentExport', 'sheet': 'AssessmentExport'},}
 
 # Attempt re-loading data if the spreadsheet was modified within the last XX seconds
 time_after_update_wait = 30

@@ -733,3 +733,15 @@ class chchpd:
             data = data.filter(items=cols).drop(['session_labels', 'sex', 'age', 'education'])
 
         return data.fillna(np.nan)
+
+    def import_assessments(self, assessment_type=None):
+        data = self._load_spreadsheet(modality='assessments', na=['NA', '', 'None', None])
+        data['session_id'] = data.apply(lambda x: f'{x.subject_id}_{x.session_id}', 1)
+
+        if isinstance(assessment_type, str):
+            assessment_type = [assessment_type]
+
+        if assessment_type is not None:
+            data = data.query(f'assessment_type == {assessment_type}').reset_indet(drop=True)
+
+        return data
