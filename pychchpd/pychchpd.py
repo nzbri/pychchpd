@@ -742,6 +742,6 @@ class chchpd:
             assessment_type = [assessment_type]
 
         if assessment_type is not None:
-            data = data.query(f'assessment_type == {assessment_type}').reset_indet(drop=True)
+            data = data.query(f'assessment_type == {assessment_type}').reset_index(drop=True)
 
         return data
