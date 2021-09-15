@@ -150,6 +150,10 @@ class chchpd:
     def set_verbose(self, verbose):
         self._verbose = bool(verbose)
 
+    @property
+    def verbose(self):
+        return self._verbose
+
     def session_id(self, allow_hyphen=True, allow_underscore=True):
         self._session_id_allow_hyphen = bool(allow_hyphen)
         self._session_id_allow_underscore = bool(allow_underscore)
@@ -248,7 +252,7 @@ class chchpd:
         dataset = move_columns(df=dataset, cols_to_move=['session_id'],
                                ref_col=dataset.columns[0], place='Before')
 
-        if len(unmatched) > 0:
+        if len(unmatched) > 0 and self.verbose:
             print('Records failed to match to a universal session ID:')
             print(tabulate(unmatched, headers='keys', tablefmt='fancy_grid'))
 
@@ -399,7 +403,7 @@ class chchpd:
 
         return data.fillna(np.nan)
 
-    def import_sessions(self, from_study=None, exclude=True, print_exclude_summary=True):
+    def import_sessions(self, from_study=None, exclude=True):
         data = self._load_spreadsheet(modality='sessions', na=('', 'None', None))
 
         data = data.astype({'date': 'datetime64', 'mri_scan_no': 'UInt64'}).astype({'mri_scan_no': str})
@@ -417,7 +421,7 @@ class chchpd:
         if exclude:
             excluded_session = data.query('(~study_excluded.isna()) & study_excluded').reset_index(drop=True)
 
-            if print_exclude_summary and len(excluded_session) > 0:
+            if self.verbose and len(excluded_session) > 0:
                 print('Automatically excluded sessions:')
                 exclusion_summary = (excluded_session.groupby('study')['study'].count().to_frame().
                                      query('study != 0').rename(columns={'study': 'Excluded'}))
