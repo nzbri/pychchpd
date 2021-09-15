@@ -144,8 +144,8 @@ class chchpd:
     def __repr__(self):
         return f'CHCHPD Package - Anonymize={self._anonymize_id}, Verbose={self._verbose}.'
 
-    def anonymize(self, anon_id):
-        self._anonymize_id = bool(anon_id)
+    def anonymize(self, use_anon_id):
+        self._anonymize_id = bool(use_anon_id)
 
     def set_verbose(self, verbose):
         self._verbose = bool(verbose)

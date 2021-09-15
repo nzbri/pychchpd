@@ -6,7 +6,7 @@ long_description = 'Something to come.'
 
 setuptools.setup(
     name="pychchpd",
-    version="0.0.1rc1",
+    version="0.0.1rc2",
     author="Reza Shoorangiz",
     author_email="reza.shoorangiz@nzbri.org",
     description="A port of CHCHPD package from R.",
