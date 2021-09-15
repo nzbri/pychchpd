@@ -419,7 +419,11 @@ class chchpd:
         data = self._map_to_universal_session_id(data, make_session_label=False, remove_double_measures=False)
 
         if exclude:
-            excluded_session = data.query('(~study_excluded.isna()) & study_excluded').reset_index(drop=True)
+            data['selection_idx'] = data.apply(
+                lambda x: (pd.isna(x.study_excluded) == False) & bool(x.study_excluded == True), 1)
+
+            excluded_session = data.query('selection_idx==True').reset_index(drop=True).drop(
+                columns=['selection_idx'])
 
             if self.verbose and len(excluded_session) > 0:
                 print('Automatically excluded sessions:')
@@ -427,7 +431,8 @@ class chchpd:
                                      query('study != 0').rename(columns={'study': 'Excluded'}))
                 print(tabulate(exclusion_summary, headers='keys', tablefmt='fancy_grid'))
 
-            data = data.query('(study_excluded.isna()) | (study_excluded != True)').reset_index(drop=True)
+            data['selection_idx'] = data.apply(lambda x: pd.isna(x.study_excluded) | bool(x.study_excluded != True), 1)
+            data = data.query('selection_idx').reset_index(drop=True).drop(columns=['selection_idx'])
 
         if from_study is not None:
             if isinstance(from_study, str) or not hasattr(from_study, '__iter__'):
