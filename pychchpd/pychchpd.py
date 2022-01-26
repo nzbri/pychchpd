@@ -413,7 +413,7 @@ class chchpd:
         data = (data.filter(['session_id', 'subject_id', 'session_suffix', 'study', 'date',
                              'study_group', 'study_excluded', 'mri_scan_no']).
                 rename(columns={'session_id': 'session_label',
-                                'date': 'session_date'}).
+                                'date'      : 'session_date'}).
                 assign(study=pd.Categorical(data['study'])))
 
         data = self._map_to_universal_session_id(data, make_session_label=False, remove_double_measures=False)
@@ -670,18 +670,18 @@ class chchpd:
     def import_neuropsyc(self, concise=True):
         data = self._load_spreadsheet('neuropsyc')
 
-        data = data.rename(columns={'np1_date': 'session_date',
-                                    'group': 'np_group',
-                                    'session_type': 'full_assessment',
-                                    'nzbri_criteria': 'cognitive_status',
+        data = data.rename(columns={'np1_date'           : 'session_date',
+                                    'group'              : 'np_group',
+                                    'session_type'       : 'full_assessment',
+                                    'nzbri_criteria'     : 'cognitive_status',
                                     'global_z_historical': 'global_z_no_language',
-                                    'moca': 'MoCA',
-                                    'wtar_wais_3_fsiq': 'WTAR',
-                                    'attention_mean': 'attention_domain',
-                                    'executive_mean': 'executive_domain',
-                                    'visuo_mean': 'visuo_domain',
-                                    'memory_mean': 'learning_memory_domain',
-                                    'language_mean': 'language_domain'})
+                                    'moca'               : 'MoCA',
+                                    'wtar_wais_3_fsiq'   : 'WTAR',
+                                    'attention_mean'     : 'attention_domain',
+                                    'executive_mean'     : 'executive_domain',
+                                    'visuo_mean'         : 'visuo_domain',
+                                    'memory_mean'        : 'learning_memory_domain',
+                                    'language_mean'      : 'language_domain'})
 
         # Make ordinal data.
         data['cognitive_status'] = (data.cognitive_status.
@@ -711,8 +711,8 @@ class chchpd:
 
             baseline_data = (sub_data.head(1).
                              rename(columns={'session_date': 'date_baseline',
-                                             'global_z': 'global_z_baseline',
-                                             'diagnosis': 'diagnosis_baseline'}).
+                                             'global_z'    : 'global_z_baseline',
+                                             'diagnosis'   : 'diagnosis_baseline'}).
                              filter(['subject_id', 'date_baseline', 'global_z_baseline', 'diagnosis_baseline']))
 
             sub_data = sub_data.merge(baseline_data, how='left')
@@ -739,7 +739,7 @@ class chchpd:
         else:
             cols = ['session_id', 'np_excluded', 'full_assessment', 'np_group', 'cognitive_status', 'MoCA', 'WTAR']
             cols = cols + [col for col in data.columns.to_list() if col not in cols]
-            data = data.filter(items=cols).drop(['session_labels', 'sex', 'age', 'education'])
+            data = data.filter(items=cols).drop(columns=['session_labels', 'sex', 'age', 'education'])
 
         return data.fillna(np.nan)
 
