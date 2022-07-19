@@ -161,7 +161,7 @@ class chchpd:
     def _get_subject_id_anon_id_conversion_dict(self):
         participant_conversion_table = (
             self._load_spreadsheet('participants', na=['NA', '', 'None', None], fix_anon=False).
-                filter(items=['subject_id', 'anon_id']))
+            filter(items=['subject_id', 'anon_id']))
 
         participant_conversion_dict = dict(zip(participant_conversion_table.subject_id,
                                                participant_conversion_table.anon_id))
@@ -269,8 +269,19 @@ class chchpd:
 
     @return_copy
     @cache
-    def _get_spreadsheet_info(self, title):
+    def _get_spreadsheet_info(self, title=None, key=None):
+        if key:
+            tmpinfo = self.__gc.open_by_key(key)
+            info = dict(
+                id=tmpinfo.id,
+                name=tmpinfo.title,
+                createdTime=tmpinfo.creationTime,
+                modifiedTime=tmpinfo.lastUpdateTime
+            )
+            return info
+
         info = self.__gc.list_spreadsheet_files(title)
+
         if len(info) == 0:
             raise ValueError(f'{title} spreadsheet does not exist or you do not have permission to access it.')
         elif len(info) > 1:
@@ -303,9 +314,10 @@ class chchpd:
     def _load_data(self, modality, info=None, na=None):
         title = defaults.spreadsheets[modality]['spreadsheet']
         sheet = defaults.spreadsheets[modality]['sheet']
+        key = defaults.spreadsheets[modality]['key']
 
         if info is None:
-            info = self._get_spreadsheet_info(title)
+            info = self._get_spreadsheet_info(title=title, key=key)
 
         info = info.copy()
         spreadsheet_id = info['id']
@@ -329,10 +341,11 @@ class chchpd:
 
     def _load_spreadsheet(self, modality, na=None, fix_anon=True):
         title = defaults.spreadsheets[modality]['spreadsheet']
+        key = defaults.spreadsheets[modality]['key']
         accept_spreadsheet = False
         info = ()
         for attempt in range(max(0, defaults.retry_attempts)):
-            info = self._get_spreadsheet_info(title)
+            info = self._get_spreadsheet_info(title=title, key=key)
             modified_time = parse(info.get('modifiedTime'))
             elapsed_time_since_update = (datetime.now(tz=modified_time.tzinfo) - modified_time).total_seconds()
             if (elapsed_time_since_update < defaults.time_after_update_wait):
