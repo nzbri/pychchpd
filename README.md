@@ -5,7 +5,7 @@ Work in progress, might be buggy at times.
 Install via pip:
 
 ```
-pip install --upgrade-strategy=only-if-needed git+https://github.com/rezashr/pychchpd
+pip install --upgrade-strategy=only-if-needed git+https://github.com/nzbri/pychchpd
 ```
 
 Here's an example:
