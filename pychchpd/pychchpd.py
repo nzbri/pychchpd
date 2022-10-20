@@ -386,9 +386,14 @@ class chchpd:
                             participant_status=pd.Categorical(data['participant_status'])))
 
         time_unit = np.timedelta64(1, 'D')
-        data['age_today'] = data.apply(
-            lambda x: np.round(
-                (datetime.today() - x.birth_date).to_timedelta64().astype(time_unit).astype(float) / 365.25, 2), 1)
+
+        def calc_age_today(x):
+            if pd.isna(x.birth_date):
+                return pd.NaT
+            return np.round(
+                (datetime.today() - x.birth_date).to_timedelta64().astype(time_unit).astype(float) / 365.25, 2)
+
+        data['age_today'] = data.apply(lambda x: calc_age_today(x), 1)
 
         def get_age_at_death(x):
             if pd.isna(x.date_of_death):
